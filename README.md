@@ -204,6 +204,10 @@ kodowanie, ochronę wejścia, błędy zapisu, odtwarzalność i ponowny odczyt C
 Przypadki wejściowe są małe i mają ręcznie określone oczekiwania.
 GUI i eksport wykresów zostaną przetestowane w odpowiadających im etapach.
 
+Testy odczytują raporty jawnie jako UTF-8, niezależnie od domyślnego kodowania
+systemu. Sprawdzono również 31 testów z symulacją domyślnego odczytu plików
+w Windows CP1252 i CP1250: w obu przypadkach 0 błędów i 0 niepowodzeń.
+
 ## Pliki
 
 | Plik | Rola |

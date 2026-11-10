@@ -273,7 +273,7 @@ class CliTests(unittest.TestCase):
                                 "--range-action", "missing", "--outlier", "median_income",
                                 "--outlier-action", "flag"])
         self.assertEqual(code, 0)
-        report = json.loads(self.report.read_text())
+        report = json.loads(self.report.read_text(encoding="utf-8"))
         self.assertEqual((report["before"]["rows"], report["after"]["rows"]), (12, 11))
         self.assertEqual(report["before"]["missing_cells"], 2)
         self.assertEqual(report["after"]["missing_cells"], 0)
@@ -283,15 +283,15 @@ class CliTests(unittest.TestCase):
         self.assertEqual(frame.shape, (11, 11))
         self.assertEqual(frame["median_income__outlier"].sum(), 1)
         self.assertEqual(source.read_bytes(), original)
-        self.assertIn("Ślad zmian", self.summary.read_text())
+        self.assertIn("Ślad zmian", self.summary.read_text(encoding="utf-8"))
 
     def test_pipeline_is_repeatable_except_timestamps(self) -> None:
         options = [str(ROOT / "dane_srednik.csv"), "--range", "wiek", "0", "120",
                    "--range-action", "missing"]
         self.assertEqual(self.execute(options)[0], 0)
-        first_csv, first = self.output.read_bytes(), json.loads(self.report.read_text())
+        first_csv, first = self.output.read_bytes(), json.loads(self.report.read_text(encoding="utf-8"))
         self.assertEqual(self.execute(options)[0], 0)
-        second = json.loads(self.report.read_text())
+        second = json.loads(self.report.read_text(encoding="utf-8"))
         self.assertEqual(first_csv, self.output.read_bytes())
         for report in (first, second):
             for entry in report["audit_log"]:
@@ -304,7 +304,7 @@ class CliTests(unittest.TestCase):
         frame = read_csv(self.output)
         self.assertEqual(frame["liczba"].tolist(), [10, 15, 15, 20, 15])
         self.assertTrue(frame["pusta"].isna().all())
-        report = json.loads(self.report.read_text())
+        report = json.loads(self.report.read_text(encoding="utf-8"))
         self.assertFalse(report["quality_before"]["outliers_iqr"]["stala"]["applicable"])
 
     def test_invalid_config_produces_no_outputs(self) -> None:
