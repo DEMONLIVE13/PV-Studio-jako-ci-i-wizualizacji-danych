@@ -1,0 +1,8 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+projekt-2-dane.pdf
+warunki-programowanie-v*.pdf
+.DS_Store
