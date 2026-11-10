@@ -1,5 +1,7 @@
 # Projekt 2 — zadania na kolejne tygodnie
 
+Autor: **Szymon Głogowski** (`DEMONLIVE13`).
+
 Źródła: `projekt-2-dane.pdf` z 5.10.2026 oraz
 `warunki-programowanie-v (1).pdf` z 6.10.2026, udostępnione w rozmowie.
 Nie kopiować PDF-ów do repozytorium. Pliki kodu, testów, danych i wyników
@@ -73,7 +75,7 @@ kolumny; błędny plik nie zamyka programu.
 - [ ] Zachować w katalogu głównym `cleaned.csv`, przykładowy raport i minimum dwa wyeksportowane wykresy.
 - [ ] Uzupełnić README: instalacja, uruchomienie, funkcje, ograniczenia, autor, źródła, biblioteki i faktyczny zakres AI.
 - [ ] Uzupełnić raport testów i prawdziwą historię pracy; sprawdzić uruchomienie według README.
-- [ ] Przygotować instrukcję pakowania `Nazwisko_Imie_P2.zip` bez środowiska wirtualnego, sekretów i zbędnych artefaktów.
+- [ ] Przygotować instrukcję pakowania `Glogowski_Szymon_P2.zip` bez środowiska wirtualnego, sekretów i zbędnych artefaktów.
 - [ ] Zaktualizować status etapu i podsumować wynik wraz z linkiem do zmian w GitHub.
 
 **Odbiór:** pełna aplikacja, powtarzalne wyniki, eksporty, dokumentacja,

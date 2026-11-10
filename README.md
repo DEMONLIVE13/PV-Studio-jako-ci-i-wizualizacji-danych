@@ -1,6 +1,8 @@
 # Projekt 2 — Studio jakości i wizualizacji danych
 
 Programowanie V, laboratoria 6–9. **Gotowy etap: laboratorium 6.**
+**Autor: Szymon Głogowski** (`DEMONLIVE13`).
+
 Skrypt wczytuje CSV, pokazuje profil danych, wykrywa problemy, wykonuje wybrane
 operacje czyszczenia oraz zapisuje `cleaned.csv` i raport przed/po.
 Wizualizacje i GUI należą do kolejnych etapów z [planu](PLAN_PROJEKTU_2.md).
@@ -38,6 +40,37 @@ Oczekiwany wynik: 12 → 11 rekordów, usunięty 1 nadmiarowy pełny duplikat,
 (2 pierwotne braki i 1 po regule zakresu). Dodana flaga
 `median_income__outlier` oznacza dokładnie 1 obserwację. Zmieniona wartość
 wieku to 37,5; skrajny dochód 90 pozostaje zachowany.
+
+### Jak pokazać gotowy lab 6 (3–5 minut)
+
+1. Otwórz terminal w katalogu projektu. Zainstaluj zależności przez
+   `python -m pip install -r requirements.txt` i wykonaj główne polecenie powyżej.
+2. Pokaż podgląd danych w terminalu i komunikat: **12 → 11 rekordów,
+   2 → 0 brakujących komórek**.
+3. Otwórz `raport_lab6.md`: porównanie przed/po, typy, procent braków,
+   unikalność, reguła wieku, IQR i ślad zmian. W raporcie jest
+   1 nadmiarowy duplikat przed czyszczeniem i 0 po nim.
+4. Otwórz `cleaned.csv`: wiek 120 zastąpiono medianą 37,5,
+   brak `total_bedrooms` medianą 375, brak tekstu dominantą `NEAR BAY`.
+   Dochód 90 został zachowany i ma flagę `median_income__outlier=True`.
+5. Uruchom `python -m unittest -v` i pokaż **Ran 31 tests / OK**.
+   Testy sprawdzają też reset, powtarzalność oraz zachowanie niepowiązanych kolumn.
+6. Pokaż kontrolowany błąd: `python lab6.py nieistniejacy.csv`.
+   Powinien pojawić się czytelny komunikat `Błąd: Nie można odczytać pliku…`,
+   bez stosu wyjątków i bez zmiany istniejących wyników.
+
+Do wyjaśnienia: pełne duplikaty usuwam przed imputacją; braki liczbowe
+uzupełniam medianą, tekstowe dominantą. Wiek sprawdzam jawną regułą 1–52.
+Outlierów nie usuwam automatycznie, ponieważ odstająca obserwacja nie musi
+być błędem. `raw` zachowuje dane wejściowe, `current` zawiera wynik operacji,
+a `reset()` odtwarza stan surowy. Pełne parametry i czas operacji są w JSON.
+
+Weryfikacja 10.11.2026: 31 testów OK; główne polecenie odtworzyło
+`cleaned.csv` identyczny bajt w bajt, powtórzenie dało ten sam wynik,
+a nietknięte kolumny zachowały wartości. Przykład ze średnikiem i strategią
+`drop` dał 3 rekordy i 4 kolumny. Sprawdzenie dotyczy dołączonych danych
+testowych; CSV referencyjnego prowadzącej nie otrzymano. Wykresy i GUI
+nie należą do kamienia milowego lab 6.
 
 Pozostałe demonstracje (nadpisują domyślne pliki wynikowe):
 
@@ -195,7 +228,7 @@ można zastąpić jawnym `--sep`. Tekst z przecinkiem dziesiętnym należy
 wczytać z `--decimal ","` przed konwersją numeryczną.
 
 Zgodnie z zasadami przedmiotu gotowy projekt 2 oddaje się na końcu lab 9
-przez platformę jako `Nazwisko_Imie_P2.zip`; sam GitHub nie zastępuje
+przez platformę jako `Glogowski_Szymon_P2.zip`; sam GitHub nie zastępuje
 oddania. Dokładna data i godzina pochodzą z platformy. Archiwum końcowe ma
 zawierać pełną aplikację, dane testowe, zależności, README, wyniki,
 raport testów i minimum dwa wyeksportowane wykresy. Nie należy dołączać
@@ -203,8 +236,8 @@ raport testów i minimum dwa wyeksportowane wykresy. Nie należy dołączać
 
 ## Autor, źródła i pomoc AI
 
-Repozytorium użytkownika `DEMONLIVE13`. Imię i nazwisko autora oraz nazwę
-archiwum należy uzupełnić przed formalnym oddaniem.
+**Autor: Szymon Głogowski**, konto GitHub: `DEMONLIVE13`.
+Nazwa archiwum do końcowego oddania: `Glogowski_Szymon_P2.zip`.
 
 **Wykorzystano OpenAI Codex / ChatGPT:** odczyt obu dostarczonych PDF-ów,
 przygotowanie implementacji lab 6, testów, przykładowych danych,
