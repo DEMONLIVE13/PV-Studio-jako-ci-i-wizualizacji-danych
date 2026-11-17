@@ -1,5 +1,23 @@
 # Dziennik zmian
 
+## 2026-11-17 — laboratorium 7 i dokumentacja
+
+- Dodanie `visualizations.py`: funkcje zwracające `Figure`, histogram,
+  scatter, box plot, bar plot i korelacja Pearsona.
+- Porównania przed/po ze wspólnymi skalami, przedziałami histogramu
+  i kolejnością kategorii oraz licznikami wykorzystanych rekordów.
+- Walidacja kolumn, typów, pustych i stałych danych, kompletnych par,
+  parametrów i ścieżek eksportu; brak zmiany wejściowych DataFrame.
+- CLI `lab7.py`, pięć porównań w PNG/SVG i raport z wyliczonymi wnioskami.
+- Dodanie 17 testów wykresów, korelacji, walidacji i ponownego otwarcia eksportów.
+- Uporządkowanie README według wymagań projektu, usunięcie dopisków
+  z nazwą konta, aktualizacja planu i raportu testów.
+- Porównanie z GitHubem: bazowy kod i dane lab 6 były aktualne;
+  różnice wejściowego raportu JSON dotyczyły czasu wykonania.
+- Dodanie zasad zakończeń linii dla powtarzalnych plików CSV na Windows.
+
+Prace wykonano z pomocą OpenAI Codex / ChatGPT.
+
 ## 2026-11-10 — poprawka kodowania testów na Windows
 
 - Odtworzenie zgłoszonego wyniku 31 testów: 1 niepowodzenie i 1 błąd przy
@@ -10,7 +28,7 @@
 
 ## 2026-11-10 — autor i weryfikacja do prezentacji
 
-- Uzupełnienie autora: Szymon Głogowski (`DEMONLIVE13`).
+- Uzupełnienie autora: Szymon Głogowski.
 - Ponowna kontrola zakresu lab 6 względem tabeli kamieni milowych w PDF-ie.
 - Ponowne uruchomienie 31 testów: wszystkie zaliczone.
 - Weryfikacja głównego polecenia, identyczności eksportu i powtarzalności,

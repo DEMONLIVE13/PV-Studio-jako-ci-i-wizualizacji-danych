@@ -1,20 +1,16 @@
 # Projekt 2 — zadania na kolejne tygodnie
 
-Autor: **Szymon Głogowski** (`DEMONLIVE13`).
+Autor: **Szymon Głogowski**.
 
 Źródła: `projekt-2-dane.pdf` z 5.10.2026 oraz
-`warunki-programowanie-v (1).pdf` z 6.10.2026, udostępnione w rozmowie.
+`warunki-programowanie-v.pdf` z 6.10.2026.
 Nie kopiować PDF-ów do repozytorium. Pliki kodu, testów, danych i wyników
 zapisywać w katalogu głównym repozytorium, bez dodatkowych podfolderów.
 
 Repozytorium: https://github.com/DEMONLIVE13/PV-Studio-jako-ci-i-wizualizacji-danych
 
-Uzgodniona pora pracy automatycznej: **wtorek, 12:00, Europe/Warsaw**.
-Następne trzy etapy: 17.11.2026, 24.11.2026, 1.12.2026.
-To harmonogram pracy użytkownika, nie daty oddania ogłoszone przez uczelnię.
-Każde wykonanie ma odczytać stan repozytorium i kontynuować pierwszy
-nieukończony etap, zachowując zmiany użytkownika. Status oznaczać dopiero
-po rzeczywistej realizacji i testach. Ukończonych etapów nie powtarzać.
+Plan obejmuje kolejne kamienie milowe z instrukcji projektu.
+Daty przy etapach oznaczają plan pracy; termin oddania podaje platforma.
 
 ## Lab 6 — Pandas i pipeline (10.11.2026)
 
@@ -31,16 +27,19 @@ po rzeczywistej realizacji i testach. Ukończonych etapów nie powtarzać.
 
 ## Lab 7 — Matplotlib i Seaborn (17.11.2026)
 
-**Status: do wykonania.**
+**Status: ukończony.**
 
-- [ ] Dodać zależności Matplotlib i Seaborn w `requirements.txt`.
-- [ ] Utworzyć funkcje przyjmujące dane/parametry i zwracające `Figure`, bez zależności od GUI.
-- [ ] Zrealizować histogram, scatter, box plot i bar plot z tytułem i opisami osi.
-- [ ] Walidować wybór, istnienie i typ kolumn, brak danych oraz kolumnę stałą; nie generować mylących wykresów.
-- [ ] Dodać analizę korelacji dla danych liczbowych i poprawną interpretację: korelacja nie dowodzi przyczynowości.
-- [ ] Pokazać wykresy dla danych przed i po czyszczeniu, wyjaśniając wpływ operacji.
-- [ ] Zapisać minimum dwa przykładowe wykresy w katalogu głównym; testować funkcje z backendem bez okna.
-- [ ] Zaktualizować README, rzeczywisty dziennik zmian, raport testów i status etapu.
+- [x] Dodać zależności Matplotlib i Seaborn w `requirements.txt`.
+- [x] Utworzyć funkcje przyjmujące dane/parametry i zwracające `Figure`, bez zależności od GUI.
+- [x] Zrealizować histogram, scatter, box plot i bar plot z tytułem i opisami osi.
+- [x] Walidować wybór, istnienie i typ kolumn, brak danych oraz kolumnę stałą; nie generować mylących wykresów.
+- [x] Dodać analizę korelacji dla danych liczbowych i poprawną interpretację: korelacja nie dowodzi przyczynowości.
+- [x] Pokazać wykresy dla danych przed i po czyszczeniu, wyjaśniając wpływ operacji.
+- [x] Zapisać minimum dwa przykładowe wykresy w katalogu głównym; testować funkcje z backendem bez okna.
+- [x] Zaktualizować README, rzeczywisty dziennik zmian, raport testów i status etapu.
+
+Realizacja: `visualizations.py`, `lab7.py`, `test_lab7.py`, pięć porównań
+w PNG/SVG oraz `raport_lab7.md`. Szczegóły w `RAPORT_TESTOW.md`.
 
 **Odbiór:** funkcja tworząca wykres na podstawie parametrów, cztery rodzaje
 wykresów, czytelne opisy, walidacja typów i krótki opis wniosków.

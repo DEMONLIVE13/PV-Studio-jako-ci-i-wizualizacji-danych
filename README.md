@@ -1,268 +1,226 @@
 # Projekt 2 — Studio jakości i wizualizacji danych
 
-Programowanie V, laboratoria 6–9. **Gotowy etap: laboratorium 6.**
-**Autor: Szymon Głogowski** (`DEMONLIVE13`).
+Programowanie V, laboratoria 6–9. Autor: **Szymon Głogowski**.
 
-Skrypt wczytuje CSV, pokazuje profil danych, wykrywa problemy, wykonuje wybrane
-operacje czyszczenia oraz zapisuje `cleaned.csv` i raport przed/po.
-Wizualizacje i GUI należą do kolejnych etapów z [planu](PLAN_PROJEKTU_2.md).
+Projekt służy do wczytywania CSV, oceny jakości danych, kontrolowanego
+czyszczenia i porównywania wykresów przed oraz po operacjach.
 
-Wymagania pochodzą z `projekt-2-dane.pdf` (5.10.2026) i
-`warunki-programowanie-v (1).pdf` (6.10.2026), dostarczonych w rozmowie.
-PDF-y nie są kopiowane do repozytorium. Wszystkie pliki projektu leżą
-w katalogu głównym; nie ma dodatkowego folderu `lab6`.
+| Etap | Stan |
+| --- | --- |
+| Lab 6 — Pandas, profil i czyszczenie | Ukończony |
+| Lab 7 — Matplotlib, Seaborn i korelacja | Ukończony |
+| Lab 8 — GUI Tkinter/ttk | Do wykonania |
+| Lab 9 — integracja GUI, eksport i oddanie | Do wykonania |
 
 ## Wymagania i instalacja
 
-Python 3.10+ i Pandas 2.2.x. Testy korzystają z wbudowanego `unittest`.
-Polecenia wykonuj w katalogu repozytorium; na Windows można użyć `py`
-zamiast `python`.
+Python 3.10 lub nowszy. Zależności są zapisane w `requirements.txt`:
+Pandas 2.x, NumPy, Matplotlib 3.9–3.10, Seaborn 0.13 i Pillow.
+Testy korzystają z `unittest`.
 
-```bash
-python -m pip install -r requirements.txt
-python lab6.py --help
+Polecenia dla Windows PowerShell, wykonywane w katalogu projektu:
+
+```powershell
+python -m venv .venv
+.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-Opcjonalne środowisko wirtualne należy utworzyć lokalnie; nie jest częścią
-pakietu do oddania ani repozytorium.
+Na innych systemach interpreter środowiska znajduje się w `.venv/bin/python`.
 
-## Uruchomienie lab 6
+## Uruchomienie
 
-Przykład odtwarzający dołączone `cleaned.csv`, `raport_lab6.json` i
-`raport_lab6.md`:
+Najpierw przygotuj oczyszczone dane i raport zmian:
 
-```bash
-python lab6.py dane_przecinek.csv --range housing_median_age 1 52 --range-action missing --missing impute --outlier median_income --outlier-action flag
+```powershell
+.venv\Scripts\python.exe lab6.py dane_przecinek.csv --range housing_median_age 1 52 --range-action missing --missing impute --outlier median_income --outlier-action flag
 ```
 
-Oczekiwany wynik: 12 → 11 rekordów, usunięty 1 nadmiarowy pełny duplikat,
-1 wiek spoza zakresu zamieniony na brak, uzupełnione 3 komórki w 3 rekordach
-(2 pierwotne braki i 1 po regule zakresu). Dodana flaga
-`median_income__outlier` oznacza dokładnie 1 obserwację. Zmieniona wartość
-wieku to 37,5; skrajny dochód 90 pozostaje zachowany.
+Wynik: `cleaned.csv`, `raport_lab6.json` i `raport_lab6.md`.
+Przykład zmniejsza zbiór z 12 do 11 rekordów i liczbę brakujących komórek
+z 2 do 0. Wiek 120 zamienia na brak, następnie uzupełnia medianą 37,5.
+Dochód 90 pozostaje w danych i otrzymuje flagę wartości odstającej.
 
-### Jak pokazać gotowy lab 6 (3–5 minut)
+Następnie utwórz wykresy dla danych przed i po czyszczeniu:
 
-1. Otwórz terminal w katalogu projektu. Zainstaluj zależności przez
-   `python -m pip install -r requirements.txt` i wykonaj główne polecenie powyżej.
-2. Pokaż podgląd danych w terminalu i komunikat: **12 → 11 rekordów,
-   2 → 0 brakujących komórek**.
-3. Otwórz `raport_lab6.md`: porównanie przed/po, typy, procent braków,
-   unikalność, reguła wieku, IQR i ślad zmian. W raporcie jest
-   1 nadmiarowy duplikat przed czyszczeniem i 0 po nim.
-4. Otwórz `cleaned.csv`: wiek 120 zastąpiono medianą 37,5,
-   brak `total_bedrooms` medianą 375, brak tekstu dominantą `NEAR BAY`.
-   Dochód 90 został zachowany i ma flagę `median_income__outlier=True`.
-5. Uruchom `python -m unittest -v` i pokaż **Ran 31 tests / OK**.
-   Testy sprawdzają też reset, powtarzalność oraz zachowanie niepowiązanych kolumn.
-6. Pokaż kontrolowany błąd: `python lab6.py nieistniejacy.csv`.
-   Powinien pojawić się czytelny komunikat `Błąd: Nie można odczytać pliku…`,
-   bez stosu wyjątków i bez zmiany istniejących wyników.
-
-Do wyjaśnienia: pełne duplikaty usuwam przed imputacją; braki liczbowe
-uzupełniam medianą, tekstowe dominantą. Wiek sprawdzam jawną regułą 1–52.
-Outlierów nie usuwam automatycznie, ponieważ odstająca obserwacja nie musi
-być błędem. `raw` zachowuje dane wejściowe, `current` zawiera wynik operacji,
-a `reset()` odtwarza stan surowy. Pełne parametry i czas operacji są w JSON.
-
-Weryfikacja 10.11.2026: 31 testów OK; główne polecenie odtworzyło
-`cleaned.csv` identyczny bajt w bajt, powtórzenie dało ten sam wynik,
-a nietknięte kolumny zachowały wartości. Przykład ze średnikiem i strategią
-`drop` dał 3 rekordy i 4 kolumny. Sprawdzenie dotyczy dołączonych danych
-testowych; CSV referencyjnego prowadzącej nie otrzymano. Wykresy i GUI
-nie należą do kamienia milowego lab 6.
-
-Pozostałe demonstracje (nadpisują domyślne pliki wynikowe):
-
-```bash
-python lab6.py dane_srednik.csv --range wiek 0 120 --range-action missing --missing drop
-python lab6.py dane_brzegowe.csv --numeric liczba --missing impute
+```powershell
+.venv\Scripts\python.exe lab7.py dane_przecinek.csv cleaned.csv
 ```
 
-Dla danych od prowadzącej, po zapisaniu jej CSV na własnym komputerze:
+Powstaje pięć porównań, każde w PNG i SVG, oraz `raport_lab7.md`:
 
-```bash
-python lab6.py california_housing.csv --range housing_median_age 1 52 --range-action report --missing impute
-```
-
-Przed zmianą zakresów należy sprawdzić znaczenie kolumn i wartości w danym
-pliku. Zakres 1–52 to jawna reguła przykładowa dla wieku w tym zbiorze,
-a nie automatycznie narzucana reguła dla każdego CSV. Aplikacja nie wymaga
-nazw z California Housing i obsługuje inne poprawne CSV.
-
-## Możliwości
-
-| Obszar lab 6 | Realizacja |
+| Pliki `*_przed_po` | Zawartość |
 | --- | --- |
-| Wczytanie | Automatyczne lub jawne `,` / `;`, kodowanie, separator dziesiętny, podgląd 5 rekordów |
-| Profil | Liczba rekordów/kolumn, typy, statystyki opisowe, liczba i procent braków, duplikaty, unikalność |
-| Reguły jakości | Wiele domkniętych zakresów, IQR dla kolumn liczbowych, liczba wartości nieskończonych |
-| Czyszczenie | Pełne duplikaty, usuwanie braków lub imputacja, konwersja błędnego tekstu, zakresy i outliery |
-| Raport | Profil i jakość przed/po, parametry, czas UTC, liczba dotkniętych rekordów, zmienione komórki |
-| Reset | `DataSession.reset()` przywraca kopię surową bez ponownego uruchomienia procesu |
-| Eksport | `cleaned.csv`, raport JSON i czytelny raport Markdown |
-| Powtarzalność | Identyczne dane wyjściowe dla tych samych parametrów; czas w dzienniku odzwierciedla rzeczywiste wykonanie |
+| `histogram` | Rozkład `housing_median_age` |
+| `scatter` | `median_income` względem `median_house_value` |
+| `boxplot` | Rozkład i wartości odstające `median_income` |
+| `barplot` | Liczebność kategorii `ocean_proximity` |
+| `korelacja` | Macierz Pearsona dla dwóch zmiennych wykresu punktowego |
 
-Plik wejściowy i pliki wyjściowe muszą mieć różne ścieżki. Program nie tworzy
-folderów. Wyniki domyślnie zapisuje w bieżącym katalogu; ponowne uruchomienie
-zastępuje poprzednie wyniki. Zapis może być częściowy przy awarii dysku lub
-braku uprawnień do jednego z plików — po komunikacie błędu należy ponowić
-eksport do zapisywalnej lokalizacji.
+Wykresy można otworzyć bezpośrednio z katalogu projektu. Niebieski panel
+pokazuje dane przed czyszczeniem, zielony panel dane po czyszczeniu.
+Oba panele mają wspólne skale, histogram wspólne przedziały, a wykres
+słupkowy wspólną kolejność kategorii. Licznik `n` podaje liczbę rekordów
+wykorzystanych na wykresie względem wszystkich rekordów danej wersji zbioru.
+Ponowne uruchomienie zastępuje poprzednie pliki wynikowe.
 
-### Parametry
+### Inny CSV i parametry wykresu
 
-| Opcja | Działanie |
-| --- | --- |
-| `--sep auto` / `--sep ";"` / `--sep ","` | Separator CSV; domyślnie wykrywany |
-| `--encoding cp1250` | Jawne kodowanie; domyślnie UTF-8 z obsługą BOM, bez cichego zastępowania znaków |
-| `--decimal ","` | Liczby zapisane z przecinkiem dziesiętnym, zwykle z separatorem `;` |
-| `--numeric KOLUMNA` | Konwersja jednej kolumny na liczby; błędny tekst i ±inf stają się brakami; można powtarzać |
-| `--range KOLUMNA MIN MAX` | Reguła domkniętego zakresu; można wskazać wiele różnych kolumn |
-| `--range-action report\|missing\|clip\|drop` | Raportowanie, zamiana na brak, przycięcie lub usunięcie rekordów; domyślnie `report` |
-| `--missing keep\|drop\|impute` | Pozostawienie, usuwanie lub imputacja braków; domyślnie `impute` |
-| `--missing-column KOLUMNA` | Ograniczenie strategii braków do wybranych kolumn; można powtarzać |
-| `--keep-duplicates` | Zachowanie pełnych duplikatów; domyślnie usuwane |
-| `--outlier KOLUMNA` | Wskazanie kolumny do obsługi outlierów; można powtarzać |
-| `--outlier-action report\|flag\|clip\|drop` | Raportowanie, flaga, przycięcie lub usuwanie; domyślnie `report` |
-| `--iqr-factor 1.5` | Dodatni współczynnik reguły IQR |
-| `--output PLIK` / `--output-sep ";"` | Ścieżka i separator eksportu CSV |
-| `--report PLIK` / `--summary PLIK` | Ścieżki raportów JSON i Markdown |
+Nazwy kolumn można podać samodzielnie; program nie wymaga schematu
+California Housing:
 
-### Decyzje dotyczące czyszczenia
+```powershell
+.venv\Scripts\python.exe lab7.py surowe.csv oczyszczone.csv --hist wiek --x wiek --y wynik --box wynik --category segment --bins 8 --formats png svg
+```
 
-1. Pełne duplikaty są usuwane jako pierwsze, z pozostawieniem pierwszego
-   wystąpienia. Kolumny nie są zmieniane, a różniące się rekordy nie są łączone.
-   Duplikaty powstałe dopiero po imputacji nie są automatycznie usuwane;
-   ujawni je profil po operacjach.
-2. Konwersja na liczby wymaga wskazania kolumny. Niepoprawne tokeny i ±inf
-   zamieniają się na braki; liczba takich wartości trafia do dziennika.
-   Domyślnie tekst i wartości nieskończone pozostają zachowane.
-3. Zakresy dotyczą wyłącznie wybranych kolumn liczbowych. Tryb `report`
-   pokazuje problem bez zmiany danych. Tryby `missing`, `clip` i `drop`
-   wymagają jawnego parametru użytkownika.
-4. Imputacja stosuje medianę skończonych liczb oraz dominantę tekstu i wartości
-   logicznych. Przy remisie wybierana jest pierwsza dominanta w kolejności
-   Pandas. Całkowicie pusta kolumna nie ma wiarygodnej mediany/dominanty:
-   zostaje pusta i trafia do `unfilled_columns` w raporcie.
-5. IQR = Q3 − Q1. Wartości poniżej Q1 − k·IQR lub powyżej Q3 + k·IQR
-   są odstające. Kwartyle mają interpolację liniową. Przy IQR=0 albo braku
-   skończonych danych metoda jest nieaktywna; taki stan jest raportowany.
-6. Outlier nie musi być błędem, dlatego domyślnie jest raportowany.
-   Przykład oznacza dochód flagą i zachowuje jego wartość. Przycinanie lub
-   usuwanie należy uzasadnić znaczeniem danych. Flaga tworzy kolumnę logiczną
-   dla wszystkich rekordów, więc jej `affected_records` obejmuje wszystkie
-   rekordy; `detected` wskazuje wyłącznie liczbę outlierów.
-7. Kolejność pipeline: duplikaty → konwersje → zakresy → braki → wybrane
-   operacje IQR. Każda operacja IQR oblicza progi z aktualnych danych.
-   Kolejność kilku operacji usuwających rekordy może wpływać na późniejsze
-   progi; parametry i kolejność są zapisywane w raporcie.
+`--sep` przyjmuje `auto`, przecinek lub średnik. `--encoding` określa
+kodowanie, `--decimal` separator dziesiętny, a `--output-dir` istniejący
+katalog wynikowy. Wejścia mogą mieć różne separatory przy `--sep auto`;
+kodowanie i separator dziesiętny są wspólne. `--formats` obsługuje PNG,
+SVG i PDF. Pełna lista opcji:
 
-`before` w JSON opisuje oryginalny plik. `quality_before` ocenia osobną kopię
-surowych danych po jawnej konwersji kolumn `--numeric`, aby możliwa była
-ocena ich zakresów. Oryginalne typy pozostają widoczne w `before`.
-`after` i `quality_after` dotyczą wyniku całego pipeline.
-`affected_records` nie należy sumować pomiędzy operacjami, ponieważ jeden
-rekord może zostać dotknięty kilkukrotnie.
+```powershell
+.venv\Scripts\python.exe lab6.py --help
+.venv\Scripts\python.exe lab7.py --help
+```
 
-### Reset w tym samym procesie
-
-Logika sesji jest oddzielona od interfejsu. Można używać jej interaktywnie,
-a w lab 8 zostanie połączona z GUI:
+### Funkcja budująca wykres z parametrów
 
 ```python
-from data_session import DataSession, RangeRule
+from data_session import read_csv
+from visualizations import build_figure, save_figure
 
-session = DataSession.from_csv("dane_przecinek.csv")
-session.drop_exact_duplicates()
-session.apply_range("housing_median_age", RangeRule(1, 52), "missing")
-session.handle_missing("impute")
-session.reset()  # 12 oryginalnych rekordów, bez zmienionych wartości i flag
-print(session.profile()["rows"])
+frame = read_csv("cleaned.csv")
+figure = build_figure(frame, "histogram", "housing_median_age", bins=8,
+                      title="Rozkład wieku zabudowy")
+save_figure(figure, "wiek.png")
 ```
+
+`build_figure()` obsługuje `histogram`, `scatter`, `box`, `bar` i `correlation`.
+`comparison_figure(before, after, kind, x, y=None, ...)` buduje porównanie
+przed/po. Obie funkcje zwracają `matplotlib.figure.Figure`, nie zmieniają
+danych i działają bez GUI. Ten sam obiekt będzie można osadzić w Tkinter.
+
+## Obsługiwane funkcje i reguły
+
+- Wczytywanie CSV z przecinkiem i średnikiem, kontrola kodowania,
+  nagłówków i liczby pól oraz podgląd danych.
+- Profil: rozmiar, typy, statystyki, liczba i procent braków,
+  pełne duplikaty i liczba unikalnych wartości.
+- Czyszczenie: pełne duplikaty, jawna konwersja liczb, reguły zakresów,
+  usuwanie albo imputacja braków oraz raportowanie, flagowanie,
+  przycinanie lub usuwanie outlierów.
+- Osobne kopie `raw` i `current`, reset sesji i dziennik operacji
+  z parametrami, czasem, liczbą rekordów i zmienionych komórek.
+- Cztery wymagane rodzaje wykresów, analiza Pearsona i eksport wykresów.
+
+Kolejność czyszczenia: duplikaty → konwersja → zakresy → braki → IQR.
+Imputacja korzysta z mediany skończonych liczb i dominanty tekstu.
+Całkowicie pusta kolumna pozostaje pusta i jest wskazana w raporcie.
+Zakres wieku 1–52 jest jawną regułą przykładu, a nie regułą narzucaną
+każdemu CSV. Pełne duplikaty usuwane są przed imputacją.
+
+IQR = Q3 − Q1; progi to Q1 − 1,5·IQR i Q3 + 1,5·IQR.
+Przy IQR=0 lub braku skończonych danych reguła czyszczenia jest nieaktywna.
+Outlier nie oznacza automatycznie błędu: domyślnie jest raportowany,
+a inną akcję i kolumnę wskazuje użytkownik. Standardowy box plot pokazuje
+wąsy 1,5·IQR i punkty poza nimi; jego narysowanie nie usuwa obserwacji.
+
+Histogram i box plot wymagają zmiennej liczbowej o różnych wartościach.
+Scatter i korelacja wymagają dwóch różnych kolumn liczbowych, co najmniej
+3 kompletnych par oraz zmienności obu kolumn w tych parach. Kolumny
+logiczne nie są traktowane jak liczby. Bar plot liczy kategorie tekstowe,
+logiczne lub jawnie kategorialne; przyjmuje do 20 kategorii. NaN i ±inf
+w zmiennych liczbowych pomija się wyłącznie na potrzeby wykresu i korelacji.
+Nie wykonuje się niejawnej konwersji tekstu na liczby.
+
+### Wnioski z dołączonego przykładu
+
+- Na histogramie po czyszczeniu znika niepoprawny wiek 120; maksimum
+  wynosi 52. Raport zmian wyjaśnia zastąpienie tej wartości medianą 37,5.
+- Dochód 90 pozostaje widoczny na scatterze i box plocie, ponieważ
+  wybrano jego oznaczenie, a nie usunięcie.
+- Słupki kategorii pozostają równe: `INLAND` 4→4, `NEAR BAY` 7→7.
+  Usunięcie duplikatu `NEAR BAY` i imputacja brakującej kategorii tą samą
+  wartością równoważą się. Przed operacjami wykres obejmuje 11/12 rekordów,
+  a po operacjach 11/11.
+- Pearson dochód/wartość domu zmienia się z **0,660885** dla 12 par
+  na **0,668561** dla 11 par. Związek liniowy jest dodatni.
+  **Korelacja nie dowodzi przyczynowości.** Mała próba i skrajny dochód
+  ograniczają wnioski; większe `r` nie oznacza lepszego czyszczenia.
 
 ## Dane testowe i testy
 
-Dołączone CSV są małymi, syntetycznymi przykładami, **nie zmodyfikowanym
-zbiorem referencyjnym prowadzącej**. Nie został on dołączony do rozmowy;
-PDF zawiera jego opis, a nie same dane. Pierwszy przykład zachowuje typowe
-nazwy kolumn California Housing, żeby ułatwić późniejszą demonstrację.
+Dołączone dane są syntetyczne. Zbiór referencyjny prowadzącej należy
+wczytać osobno; nie jest częścią tego repozytorium.
 
-| Plik | Przygotowane problemy | Oczekiwany rezultat |
+| Plik | Przygotowany przypadek | Oczekiwany wynik |
 | --- | --- | --- |
-| `dane_przecinek.csv` | 12×10, 1 nadmiarowy duplikat, 2 braki, wiek 120, dochód 90 | Główne polecenie: 11×11, 0 braków, 1 flaga dochodu |
-| `dane_srednik.csv` | 6×4, polskie znaki, duplikat, brak wieku i segmentu, wiek 200 | Po deduplikacji, zakresie 0–120→brak i `drop`: 3×4 |
-| `dane_brzegowe.csv` | 5×4, błędny tekst, inf, braki, stała i całkowicie pusta kolumna | `--numeric liczba --missing impute`: 10,15,15,20,15; `pusta` pozostaje pusta; IQR stałej nieaktywny |
+| `dane_przecinek.csv` | 12×10, duplikat, 2 braki, wiek 120, dochód 90 | Główne polecenie: 11×11, 0 braków, 1 flaga dochodu |
+| `dane_srednik.csv` | 6×4, polskie znaki, duplikat, braki, wiek 200 | Zakres 0–120→brak, usuwanie braków: 3×4 |
+| `dane_brzegowe.csv` | 5×4, błędny tekst, inf, kolumna stała i pusta | Konwersja `liczba` i imputacja: 10,15,15,20,15; kolumna `pusta` pozostaje pusta |
 
-```bash
-python -m unittest -v
+```powershell
+.venv\Scripts\python.exe -m unittest -v
 ```
 
-Wynik weryfikacji etapu: **31 testów zaliczonych**, Pandas 2.2.3.
-Testy obejmują profil, strategie braków, pełne duplikaty, zakresy bez zmian
-niepowiązanych kolumn, wszystkie akcje IQR, reset, błędne pliki i parametry,
-kodowanie, ochronę wejścia, błędy zapisu, odtwarzalność i ponowny odczyt CSV.
-Przypadki wejściowe są małe i mają ręcznie określone oczekiwania.
-GUI i eksport wykresów zostaną przetestowane w odpowiadających im etapach.
+Opis weryfikacji znajduje się w [raporcie testów](RAPORT_TESTOW.md).
+Testy obejmują logikę lab 6, poprawność danych na wykresach, wspólne skale,
+walidację, korelację, ochronę wejść oraz ponowne otwarcie PNG i SVG.
 
-Testy odczytują raporty jawnie jako UTF-8, niezależnie od domyślnego kodowania
-systemu. Sprawdzono również 31 testów z symulacją domyślnego odczytu plików
-w Windows CP1252 i CP1250: w obu przypadkach 0 błędów i 0 niepowodzeń.
+Kontrolowany błąd złego typu kolumny na lab 7:
 
-## Pliki
+```powershell
+.venv\Scripts\python.exe lab7.py dane_przecinek.csv cleaned.csv --x ocean_proximity
+```
+
+Program pokazuje komunikat o wymaganej kolumnie liczbowej, zwraca kod 2
+i zachowuje wcześniejsze wyniki. Walidacja całego zestawu poprzedza zapis.
+
+## Struktura projektu
 
 | Plik | Rola |
 | --- | --- |
-| `data_session.py` | Model sesji, wczytywanie, profil, reguły, czyszczenie, reset i audyt |
-| `lab6.py` | Parametry CLI, podgląd, uruchomienie pipeline, CSV i raporty |
-| `test_lab6.py` | Automatyczna macierz testów logiki i eksportu |
-| `dane_*.csv` | Trzy reprezentatywne wejścia testowe |
-| `cleaned.csv` | Przykładowy wynik głównego polecenia |
-| `raport_lab6.json`, `raport_lab6.md` | Pełny raport oraz czytelne podsumowanie |
-| `requirements.txt` | Zależności bieżącego etapu |
-| `PLAN_PROJEKTU_2.md`, `CHANGELOG.md` | Zadania dalszych etapów i rzeczywisty dziennik zmian |
+| `data_session.py` | Dane surowe i aktualne, profil, czyszczenie, reset, audyt |
+| `lab6.py` | CLI czyszczenia oraz raporty przed/po |
+| `visualizations.py` | Walidacja, funkcje zwracające `Figure`, Pearson, eksport |
+| `lab7.py` | CLI porównań przed/po i generowanie wniosków |
+| `test_lab6.py`, `test_lab7.py` | Testy automatyczne |
+| `dane_*.csv` | Trzy wejścia testowe |
+| `cleaned.csv`, `raport_lab6.*` | Wynik i raport czyszczenia |
+| `*_przed_po.png`, `*_przed_po.svg`, `raport_lab7.md` | Wykresy i interpretacja |
+| `RAPORT_TESTOW.md` | Przebieg i wyniki weryfikacji |
+| `PLAN_PROJEKTU_2.md`, `CHANGELOG.md` | Plan etapów i dziennik rzeczywistych zmian |
 
 ## Znane ograniczenia i oddanie
 
-To etap lab 6: nie zawiera jeszcze wykresów Matplotlib/Seaborn ani GUI
-Tkinter/ttk. Ich termin realizacji i kryteria są zapisane w planie. Dane są
-wczytywane do pamięci; dla plików większych od dostępnej pamięci potrzebne
-byłoby przetwarzanie porcjami. CSV musi mieć nagłówek z unikalnymi,
-niepustymi nazwami i stałą liczbą pól. Automatyczne rozpoznanie separatora
-można zastąpić jawnym `--sep`. Tekst z przecinkiem dziesiętnym należy
-wczytać z `--decimal ","` przed konwersją numeryczną.
+Obecna wersja działa z terminala; GUI i osadzenie wykresu należą do lab 8–9.
+Dane są wczytywane do pamięci. CSV wymaga nagłówka z unikalnymi,
+niepustymi nazwami i stałej liczby pól. Folder wynikowy musi istnieć.
+Wejścia są chronione przed nadpisaniem. Przy awarii dysku lub błędzie
+uprawnień eksport kilku plików może pozostać częściowy; należy ponowić
+zapis do dostępnego katalogu. Testy GUI będą wykonane po jego dodaniu.
 
-Zgodnie z zasadami przedmiotu gotowy projekt 2 oddaje się na końcu lab 9
-przez platformę jako `Glogowski_Szymon_P2.zip`; sam GitHub nie zastępuje
-oddania. Dokładna data i godzina pochodzą z platformy. Archiwum końcowe ma
-zawierać pełną aplikację, dane testowe, zależności, README, wyniki,
-raport testów i minimum dwa wyeksportowane wykresy. Nie należy dołączać
-środowiska wirtualnego, sekretów ani plików generowanych przez narzędzia.
+Końcowy projekt oddaje się przez platformę jako `Glogowski_Szymon_P2.zip`
+na koniec lab 9, w terminie wskazanym w kursie. ZIP powinien zawierać
+kod, zależności, README, dane testowe, raport testów, `cleaned.csv`, raport
+zmian i minimum dwa wyeksportowane wykresy. Nie należy pakować `.venv`,
+`.git`, `__pycache__`, `.review`, cache, sekretów ani pomocniczych plików.
 
-## Autor, źródła i pomoc AI
+## Źródła, biblioteki i narzędzia AI
 
-**Autor: Szymon Głogowski**, konto GitHub: `DEMONLIVE13`.
-Nazwa archiwum do końcowego oddania: `Glogowski_Szymon_P2.zip`.
+Wymagania: instrukcja „Projekt 2. Studio jakości i wizualizacji danych”
+(5.10.2026) oraz „Warunki prowadzenia przedmiotu i zasady zaliczenia”
+(6.10.2026). Wzorzec oddzielenia danych surowych i aktualnych oraz funkcji
+zwracającej `Figure` pochodzi z instrukcji projektu.
 
-**Wykorzystano OpenAI Codex / ChatGPT:** odczyt obu dostarczonych PDF-ów,
-przygotowanie implementacji lab 6, testów, przykładowych danych,
-dokumentacji i harmonogramu dalszych etapów. Kod został uruchomiony
-i sprawdzony testami automatycznymi. Student powinien samodzielnie
-przejrzeć rozwiązanie, rozumieć jego działanie i potrafić wykonać drobną
-modyfikację podczas obrony. Historia Git i CHANGELOG opisują faktyczne
-prace; nie symulują wcześniejszych tygodni pracy.
+- [Pandas](https://pandas.pydata.org/docs/) — DataFrame, profil i czyszczenie; BSD-3-Clause.
+- [Matplotlib](https://matplotlib.org/stable/users/index.html) — obiekt `Figure`, histogram, słupki i eksport; licencja Matplotlib.
+- [Seaborn](https://seaborn.pydata.org/tutorial.html) — scatter, box plot i mapa korelacji; BSD-3-Clause.
+- [NumPy](https://numpy.org/doc/) — granice przedziałów i obsługa wartości nieskończonych; BSD-3-Clause, zależność Pandas/Matplotlib.
+- [Python](https://docs.python.org/3/) — `argparse`, `csv`, `dataclasses`, `json`, `unittest` i pozostała biblioteka standardowa.
+- Pillow — ponowne otwieranie PNG w testach; licencja HPND, zależność Matplotlib.
 
-Biblioteki i materiały:
-
-- Pandas — profilowanie i operacje na DataFrame, licencja BSD-3-Clause;
-  [read_csv](https://pandas.pydata.org/docs/reference/api/pandas.read_csv.html),
-  [braki danych](https://pandas.pydata.org/docs/user_guide/missing_data.html),
-  [quantile](https://pandas.pydata.org/docs/reference/api/pandas.Series.quantile.html).
-- Python — biblioteka standardowa `argparse`, `csv`, `dataclasses`, `json`,
-  `unittest`, [dokumentacja](https://docs.python.org/3/).
-- Instrukcja projektu, str. 2–3: kamienie milowe i macierz testów;
-  str. 5–6: wzorzec sesji, pakiet do oddania i deklaracja AI.
-- Warunki przedmiotu, str. 3 i 5–7: oddanie ZIP, samodzielność, AI
-  i koniec lab 9 jako moment oddania projektu 2.
-
-Wzorzec oddzielenia danych surowych i aktualnych pochodzi z materiału
-prowadzącej; implementacja rozwija go o walidację, strategie i audyt.
+**Pomoc AI: OpenAI Codex / ChatGPT** — przygotowanie implementacji lab 6
+oraz lab 7, syntetycznych danych, testów i dokumentacji; analiza wymagań,
+uruchomienie kodu i weryfikacja wyników. Zakres kolejnych zmian jest
+zapisywany w dzienniku zmian. Historia rozmów nie jest częścią projektu.
