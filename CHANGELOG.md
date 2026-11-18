@@ -1,5 +1,13 @@
 # Dziennik zmian
 
+## 2026-11-18 — dane referencyjne i sprawdzenie lab 7
+
+- Dodanie oryginalnego california_housing_projekt2.csv.
+- Demonstracja demo_california.py: czyszczenie i wykresy rzeczywistych kolumn.
+- Weryfikacja zakresu do lab 7; bez implementowania lab 8 i 9.
+- Pomoc AI: OpenAI Codex / ChatGPT — demonstracja i weryfikacja.
+
+
 ## 2026-11-17 — laboratorium 7 i dokumentacja
 
 - Dodanie `visualizations.py`: funkcje zwracające `Figure`, histogram,

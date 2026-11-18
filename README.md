@@ -150,8 +150,8 @@ Nie wykonuje się niejawnej konwersji tekstu na liczby.
 
 ## Dane testowe i testy
 
-Dołączone dane są syntetyczne. Zbiór referencyjny prowadzącej należy
-wczytać osobno; nie jest częścią tego repozytorium.
+Pliki `dane_*.csv` są syntetyczne. Zbiór referencyjny znajduje się w
+`california_housing_projekt2.csv` (dodany 18.11.2026).
 
 | Plik | Przygotowany przypadek | Oczekiwany wynik |
 | --- | --- | --- |
@@ -224,3 +224,27 @@ zwracającej `Figure` pochodzi z instrukcji projektu.
 oraz lab 7, syntetycznych danych, testów i dokumentacji; analiza wymagań,
 uruchomienie kodu i weryfikacja wyników. Zakres kolejnych zmian jest
 zapisywany w dzienniku zmian. Historia rozmów nie jest częścią projektu.
+
+## Weryfikacja zbioru referencyjnego — lab 7
+
+```powershell
+.venv\Scripts\python.exe demo_california.py
+```
+
+Skrypt korzysta z kolumn `MedInc`, `HouseAge`, `MedHouseVal` i pozostałych
+kolumn rzeczywistego CSV. Jawnie konwertuje błędne tokeny na braki,
+usuwając pełne duplikaty, stosując zakres wieku 1–52, globalne zakresy
+współrzędnych oraz nieujemność pozostałych wielkości. Dodatnie outliery
+pozostają zachowane; dochód otrzymuje flagę IQR. Imputacja używa mediany.
+
+Do słupków tworzona jest pomocnicza kategoria wieku: do 20, 21–40 i ponad
+40 lat. Braki pozostają brakami do czasu imputacji. Zbiór źródłowy pozostaje
+niezmieniony. CSV przed wykresami pokazuje dane po jawnej konwersji tokenów;
+raport lab 6 zachowuje profil oryginalnych typów i liczbę konwersji.
+
+Wyniki trafiają do lokalnego `wyniki_california/`: oczyszczony CSV,
+raporty i pięć porównań PNG/SVG. Wyniki można odtworzyć powyższym poleceniem.
+Sprawdzenie: 20 840→20 640 rekordów, 1080→0 pierwotnych braków,
+Pearson MedInc/MedHouseVal 0,564612→0,563704. Korelacja nie dowodzi
+przyczynowości. Szczegóły: [WERYFIKACJA_LAB7.md](WERYFIKACJA_LAB7.md).
+Lab 8 i lab 9 pozostają do wykonania.
